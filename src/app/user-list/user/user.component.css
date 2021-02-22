@@ -1,0 +1,24 @@
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border: 1px solid #eaeaea;
+    border-radius: 5px;
+    padding: 1em 1.5em;
+
+    min-width: 200px;
+}
+
+.card-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-section h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+.icon-container i {
+    font-size: 2.5em;
+}

@@ -1,0 +1,18 @@
+<div class="form-container">
+    <div class="form-section">
+        <label>Name</label>
+        <input [(ngModel)]="name" type="text">
+    </div>
+    <div class="form-section">
+        <label>Field</label>
+        <input [(ngModel)]="field" type="text">
+    </div>
+    <div class="form-section">
+        <label>Date of Birth</label>
+        <input [(ngModel)]="dateOfBirth" type="text">
+    </div>
+
+    <div class="form-section">
+        <button id="submit" (click)="submit()">Save</button>
+    </div>
+</div>

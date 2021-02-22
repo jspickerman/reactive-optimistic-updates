@@ -1,1 +1,15 @@
-/* Add application styles & imports to this file! */
+body, span, p, h1, h2, h3, h4, h5, h6 {
+    font-family: Lato;
+    color: #565656;
+}
+
+button {
+    border: 1px solid #713e8a;
+    border-radius: 25px;
+    padding: .5em .25em;
+
+    background-color: #713e8a;
+    color: white;
+    font-size: 1em;
+
+}

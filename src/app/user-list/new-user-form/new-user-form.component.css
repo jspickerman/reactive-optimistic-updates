@@ -1,0 +1,15 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    margin: .5em 0;
+}
+
+#submit {
+    width: 50%;
+}
