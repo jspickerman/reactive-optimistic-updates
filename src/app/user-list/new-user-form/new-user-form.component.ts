@@ -20,8 +20,15 @@ export class NewUserFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // TODO: Basic format validation on date input?
   submit(): void {
-    this.newUser.emit({name: this.name, field: this.field, dateOfBirth: this.dateOfBirth});
-    this.userService.updateUser({name: this.name, field: this.field, dateOfBirth: this.dateOfBirth});
+    const user: User = {
+      name: this.name,
+      field: this.field,
+      dateOfBirth: this.dateOfBirth
+    }
+
+    this.newUser.emit(user); // Should we wait until this submits? We technically have a tiny race condition, server-side refresh scenario could be fleshed out to make the optimistic feature make more sense. Maybe the server could sort them?
+    this.userService.updateUser(user);
   }
 }

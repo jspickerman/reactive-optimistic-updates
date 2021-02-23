@@ -44,6 +44,8 @@ export class UserListComponent implements OnInit {
       tap((data) => console.log('switched value: ', data))
     );
 
+    // TODO: Logic for checking the refresh results for our optimistically added entries?
+
     this.loaded$ = apiResponse$.pipe(
       tap(() => console.log('loaded')),
       map(() => true),
