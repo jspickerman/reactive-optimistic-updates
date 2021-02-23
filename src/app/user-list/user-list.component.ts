@@ -10,18 +10,21 @@ import { ApiResponse, User, UserService } from '../services/user.service';
 })
 export class UserListComponent implements OnInit {
 
+  /* Data Streams and Subjects */
   users$: Observable<User[]>;
   newUser$ = new Subject<User>();
   refreshUsers$ = new Subject();
 
+  /* Page State */
   loaded$: Observable<boolean>;
-  error$ = new BehaviorSubject<boolean>(false);
+  error$: Observable<boolean>;
 
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    const apiUsers$: Observable<User[]> = this.userService.getUsers().pipe(
-      tap((res: ApiResponse) => this.error$.next(!!(res.error))),
+    const apiResponse$ = this.userService.getUsers();
+
+    const apiUsers$: Observable<User[]> = apiResponse$.pipe(
       map((res: ApiResponse) => res?.data)
     );
 
@@ -29,21 +32,28 @@ export class UserListComponent implements OnInit {
       shareReplay()
     );
 
-    const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
-      switchMapTo(apiUsers$)
-    );
-
     const optimisticUsers$ = this.newUser$.pipe(
-      tap(() => this.refreshUsers$.next()),
       withLatestFrom(latestApiUsers$),
-      map(([newUser, users]) => [...users, newUser])
+      map(([newUser, users]) => [...users, newUser]),
+      tap(() => this.refreshUsers$.next())
     );
 
-    this.users$ = merge(apiUsers$, optimisticUsers$, refreshedApiUsers$);
-    this.loaded$ = apiUsers$.pipe(
+    const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
+      tap(() => console.log('switching to refresh!')),
+      switchMapTo(apiUsers$),
+      tap((data) => console.log('switched value: ', data))
+    );
+
+    this.loaded$ = apiResponse$.pipe(
+      tap(() => console.log('loaded')),
       map(() => true),
       startWith(false)
     );
-  }
 
+    this.error$ = apiResponse$.pipe(
+      map((res: ApiResponse) => !!(res.error))
+    );
+
+    this.users$ = merge(latestApiUsers$, optimisticUsers$, refreshedApiUsers$);
+  }
 }

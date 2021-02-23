@@ -11,8 +11,8 @@ export class NgLetDirective<T> {
 
   private context: LetContext<T> = {appNgLet: null};
 
-  constructor(_viewContainer: ViewContainerRef, _templateRef: TemplateRef<LetContext<T>>) {
-    _viewContainer.createEmbeddedView(_templateRef, this.context);
+  constructor(viewContainer: ViewContainerRef, templateRef: TemplateRef<LetContext<T>>) {
+    viewContainer.createEmbeddedView(templateRef, this.context);
   }
 
   @Input()
