@@ -39,21 +39,16 @@ export class UserListComponent implements OnInit {
     );
 
     const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
-      tap(() => console.log('switching to refresh!')),
       switchMapTo(apiUsers$),
-      tap((data) => console.log('switched value: ', data))
     );
 
-    // TODO: Logic for checking the refresh results for our optimistically added entries?
-
     this.loaded$ = apiResponse$.pipe(
-      tap(() => console.log('loaded')),
       map(() => true),
       startWith(false)
     );
 
     this.error$ = apiResponse$.pipe(
-      map((res: ApiResponse) => !!(res.error))
+      map((res: ApiResponse) => !!(res.error)),
     );
 
     this.users$ = merge(latestApiUsers$, optimisticUsers$, refreshedApiUsers$);
