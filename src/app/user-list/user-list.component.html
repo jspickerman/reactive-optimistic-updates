@@ -1,7 +1,7 @@
 <div class="container">
     <ng-container *appNgLet="loaded$ | async as loaded">
         <ng-container *ngIf="!loaded">
-            <i class="fas fa-satellite-dish"></i>
+            <span>Loading...</span>
         </ng-container>
 
         <ng-container *appNgLet="error$ | async as error">
@@ -19,7 +19,6 @@
             </ng-container>
 
             <ng-container *ngIf="loaded && error">
-                <i class="fas fa-exclamation-circle"></i>
                 <span>An error occured! Please reload</span>
             </ng-container>
         </ng-container>
