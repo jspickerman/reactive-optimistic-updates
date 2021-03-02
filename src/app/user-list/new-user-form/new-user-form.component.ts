@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { User, UserService } from 'src/app/services/user.service';
+import { User, UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-new-user-form',
