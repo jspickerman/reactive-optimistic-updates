@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { map, shareReplay, startWith, switchMapTo, tap, withLatestFrom } from 'rxjs/operators';
+import { flatMap, map, mergeMap, shareReplay, startWith, switchMapTo, tap, withLatestFrom } from 'rxjs/operators';
 import { ApiResponse, User, UserService } from '../services/user.service';
 
 @Component({
@@ -12,7 +12,7 @@ export class UserListComponent implements OnInit {
 
   /* Data Streams and Subjects */
   users$!: Observable<User[]>;
-  newUser$ = new Subject<User>();
+  addUser$ = new Subject<User>();
   postUser$ = new Subject();
   refreshUsers$ = new Subject();
 
@@ -31,14 +31,20 @@ export class UserListComponent implements OnInit {
       shareReplay()
     );
 
-    const postedUserRes$ = this.newUser$.pipe(
-      tap((newUser: User) => this.userService.updateUser(newUser).pipe(tap((res: ApiResponse) => this.newUser$.next(res.data))))
+    const newUser$ = this.addUser$.pipe(
+      mergeMap((newUser: User) => this.userService.updateUser(newUser).pipe(map((res) => res.data)))
     );
 
-    const optimisticUsers$: Observable<User[]> = this.newUser$.pipe(
+    const mergedUsers$ = merge(newUser$, this.addUser$);
+
+    const optimisticUsers$: Observable<User[]> = mergedUsers$.pipe(
       withLatestFrom(latestApiUsers$),
-      map(([newUser, users]) => [...users, newUser]),
-      tap(() => this.refreshUsers$.next())
+      map(([newUser, users]) => {
+        // console.log(newUser);
+        // console.log(users);
+        return [...users, newUser];
+      }),
+      // tap(() => this.refreshUsers$.next())
     );
 
     const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
