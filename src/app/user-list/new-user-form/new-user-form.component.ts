@@ -28,7 +28,7 @@ export class NewUserFormComponent implements OnInit {
       dateOfBirth: this.dateOfBirth
     }
 
-    this.newUser.emit(user); // Should we wait until this submits? We technically have a tiny race condition, server-side refresh scenario could be fleshed out to make the optimistic feature make more sense. Maybe the server could sort them?
+    this.newUser.emit(user);
     this.userService.updateUser(user);
   }
 }

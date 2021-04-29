@@ -9,7 +9,7 @@ interface LetContext<T> {
 })
 export class NgLetDirective<T> {
 
-  private context: LetContext<T> = {appNgLet: null};
+    private context: LetContext<T> = { appNgLet: (null as unknown) as T };
 
   constructor(viewContainer: ViewContainerRef, templateRef: TemplateRef<LetContext<T>>) {
     viewContainer.createEmbeddedView(templateRef, this.context);
