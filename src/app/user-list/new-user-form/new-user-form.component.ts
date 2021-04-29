@@ -18,10 +18,6 @@ export class NewUserFormComponent implements OnInit {
     dateOfBirth: new FormControl({value: ''}, Validators.required)
   })
 
-  name!: string;
-  field!: string;
-  dateOfBirth!: string;
-
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
