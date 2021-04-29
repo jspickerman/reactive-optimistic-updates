@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User, UserService } from '../../services/user.service';
 
 @Component({
@@ -11,6 +12,12 @@ export class NewUserFormComponent implements OnInit {
   @Output()
   newUser = new EventEmitter<User>();
 
+  userForm = new FormGroup({
+    name: new FormControl({value: ''}, Validators.required),
+    field: new FormControl({value: ''}, Validators.required),
+    date: new FormControl({value: ''}, Validators.required)
+  })
+
   name!: string;
   field!: string;
   dateOfBirth!: string;
@@ -22,13 +29,13 @@ export class NewUserFormComponent implements OnInit {
 
   // TODO: Basic format validation on date input?
   submit(): void {
-    const user: User = {
-      name: this.name,
-      field: this.field,
-      dateOfBirth: this.dateOfBirth
-    }
+    // const user: User = {
+    //   name: this.name,
+    //   field: this.field,
+    //   dateOfBirth: this.dateOfBirth
+    // }
 
-    this.newUser.emit(user);
-    this.userService.updateUser(user);
+    // this.newUser.emit(user);
+    // this.userService.updateUser(user);
   }
 }

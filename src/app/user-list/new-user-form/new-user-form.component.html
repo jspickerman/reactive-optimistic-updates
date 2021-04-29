@@ -1,4 +1,5 @@
 <div class="form-container">
+  <form [formGroup]="userForm">
     <div class="form-section">
         <label>Name</label>
         <input [(ngModel)]="name" type="text">
@@ -15,4 +16,5 @@
     <div class="form-section">
         <button id="submit" (click)="submit()">Save</button>
     </div>
+  </form>
 </div>
