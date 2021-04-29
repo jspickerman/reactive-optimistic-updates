@@ -11,13 +11,13 @@ import { ApiResponse, User, UserService } from '../services/user.service';
 export class UserListComponent implements OnInit {
 
   /* Data Streams and Subjects */
-  users$: Observable<User[]>;
+  users$!: Observable<User[]>;
   newUser$ = new Subject<User>();
   refreshUsers$ = new Subject();
 
   /* Page State */
-  loaded$: Observable<boolean>;
-  error$: Observable<boolean>;
+  loaded$!: Observable<boolean>;
+  error$!: Observable<boolean>;
 
   constructor(private userService: UserService) { }
 

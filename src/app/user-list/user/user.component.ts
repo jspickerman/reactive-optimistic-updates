@@ -9,7 +9,7 @@ import { User } from '../../services/user.service';
 export class UserComponent implements OnInit {
 
   @Input()
-  user: User;
+  user!: User;
 
   constructor() { }
 

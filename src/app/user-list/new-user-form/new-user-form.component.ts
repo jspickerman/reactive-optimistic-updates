@@ -11,9 +11,9 @@ export class NewUserFormComponent implements OnInit {
   @Output()
   newUser = new EventEmitter<User>();
 
-  name: String;
-  field: String;
-  dateOfBirth: String;
+  name!: string;
+  field!: string;
+  dateOfBirth!: string;
 
   constructor(private userService: UserService) { }
 
