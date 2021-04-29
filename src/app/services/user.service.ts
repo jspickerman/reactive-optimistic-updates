@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { delay, map, scan, startWith, tap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { delay, map, scan, startWith } from 'rxjs/operators';
 
 export interface User {
-  name: String;
-  dateOfBirth: String;
-  field: String; 
+  name: string;
+  dateOfBirth: string;
+  field: string; 
 };
 
 export interface ApiResponse {
-  data: User[];
+  data: any;
   error: string;
 }
 
-let dummyUsers: User[] = [
+let fakeUsers: User[] = [
   {
     name: 'Isaac Newton',
     dateOfBirth: '01-04-1643',
@@ -42,8 +42,8 @@ export class UserService {
 
   constructor() { 
     this.users$ = this.newUser$.pipe(
-      scan((dummyUsers, newUser) =>  [...dummyUsers, newUser], dummyUsers),
-      startWith(dummyUsers)
+      scan((fakeUsers, newUser) =>  [...fakeUsers, newUser], fakeUsers),
+      startWith(fakeUsers)
     );
     this.response$ = this.users$.pipe(
       map((users) => {
@@ -56,12 +56,10 @@ export class UserService {
   }
 
   getUsers(): Observable<ApiResponse> {
-    console.log('getting users!');
     return this.response$.pipe(delay(500));
   }
 
   updateUser(user: User): Observable<ApiResponse> {
-    console.log('updating user!');
     this.newUser$.next(user);
     return this.response$.pipe(delay(650));
   }

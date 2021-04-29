@@ -8,8 +8,28 @@ button {
     border-radius: 25px;
     padding: .5em .25em;
 
-    background-color: #713e8a;
-    color: white;
+    background-color: #fff;
+    color: #713e8a;
     font-size: 1em;
+}
 
+button:hover:not(:disabled) {
+  cursor: pointer;
+  background-color: #713e8a;
+  color: white;
+}
+
+button:disabled {
+  color: #8d8392;
+  border-color: #8d8392;
+  cursor: not-allowed;
+}
+
+input {
+  border-radius: 5px;
+  border: 1px solid #565656;
+}
+
+.ng-touched .ng-invalid:not(form)  {
+  border: 1px solid #d3312e; /* red */
 }

@@ -13,6 +13,7 @@ export class UserListComponent implements OnInit {
   /* Data Streams and Subjects */
   users$!: Observable<User[]>;
   newUser$ = new Subject<User>();
+  postUser$ = new Subject();
   refreshUsers$ = new Subject();
 
   /* Page State */
@@ -22,17 +23,19 @@ export class UserListComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    const apiResponse$ = this.userService.getUsers();
-
+    const apiResponse$: Observable<ApiResponse> = this.userService.getUsers();
     const apiUsers$: Observable<User[]> = apiResponse$.pipe(
       map((res: ApiResponse) => res?.data)
     );
-
     const latestApiUsers$: Observable<User[]> = apiUsers$.pipe(
       shareReplay()
     );
 
-    const optimisticUsers$ = this.newUser$.pipe(
+    const postedUserRes$ = this.newUser$.pipe(
+      tap((newUser: User) => this.userService.updateUser(newUser).pipe(tap((res: ApiResponse) => this.newUser$.next(res.data))))
+    );
+
+    const optimisticUsers$: Observable<User[]> = this.newUser$.pipe(
       withLatestFrom(latestApiUsers$),
       map(([newUser, users]) => [...users, newUser]),
       tap(() => this.refreshUsers$.next())

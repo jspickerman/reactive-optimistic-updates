@@ -1,20 +1,20 @@
 <div class="form-container">
-  <form [formGroup]="userForm">
+  <form [formGroup]="userForm" (ngSubmit)="submit()">
     <div class="form-section">
         <label>Name</label>
-        <input [formControlName]="name" type="text">
+        <input formControlName="name" type="text">
     </div>
     <div class="form-section">
         <label>Field</label>
-        <input [formControlName]="field" type="text">
+        <input formControlName="field" type="text">
     </div>
     <div class="form-section">
         <label>Date of Birth</label>
-        <input [formControlName]="dateOfBirth" type="date">
+        <input formControlName="dateOfBirth" type="date">
     </div>
 
     <div class="form-section">
-        <button id="submit" (click)="submit()">Save</button>
+        <button id="submit" type="submit" [disabled]="!userForm.valid">Save</button>
     </div>
   </form>
 </div>
