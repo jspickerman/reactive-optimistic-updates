@@ -2,15 +2,15 @@
   <form [formGroup]="userForm">
     <div class="form-section">
         <label>Name</label>
-        <input [(ngModel)]="name" type="text">
+        <input [formControlName]="name" type="text">
     </div>
     <div class="form-section">
         <label>Field</label>
-        <input [(ngModel)]="field" type="text">
+        <input [formControlName]="field" type="text">
     </div>
     <div class="form-section">
         <label>Date of Birth</label>
-        <input [(ngModel)]="dateOfBirth" type="text">
+        <input [formControlName]="dateOfBirth" type="date">
     </div>
 
     <div class="form-section">

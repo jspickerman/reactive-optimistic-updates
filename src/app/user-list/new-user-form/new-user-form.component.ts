@@ -15,7 +15,7 @@ export class NewUserFormComponent implements OnInit {
   userForm = new FormGroup({
     name: new FormControl({value: ''}, Validators.required),
     field: new FormControl({value: ''}, Validators.required),
-    date: new FormControl({value: ''}, Validators.required)
+    dateOfBirth: new FormControl({value: ''}, Validators.required)
   })
 
   name!: string;
