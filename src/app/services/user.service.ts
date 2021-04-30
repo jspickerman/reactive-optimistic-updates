@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import { delay, map, scan, startWith, tap } from 'rxjs/operators';
-import { v4 as uuid } from 'uuid';
 
 export interface User {
   id?: string;
@@ -75,7 +74,7 @@ export class UserService {
     // this.newUser$.next(user);
     // return this.response$.pipe(delay(650));
     // fakeUsers.push(user);
-    return of({data: {...user, id: uuid()}, error: ''}).pipe(
+    return of({data: {...user}, error: ''}).pipe(
       delay(500)
     )
   }

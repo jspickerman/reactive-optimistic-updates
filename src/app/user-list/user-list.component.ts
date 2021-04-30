@@ -11,7 +11,7 @@ import { ApiResponse, User, UserService } from '../services/user.service';
 export class UserListComponent implements OnInit {
 
   /* Data Streams and Subjects */
-  users$!: Observable<User[]>;
+  users$: Observable<User[]>;
   addUser$ = new Subject<User>();
   postUser$ = new Subject();
   refreshUsers$ = new Subject();
