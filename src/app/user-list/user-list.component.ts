@@ -18,32 +18,44 @@ export class UserListComponent implements OnInit {
 
   /* Page State */
   loaded$!: Observable<boolean>;
-  listError$ = new Subject<boolean>();
-  updateError$ = new Subject<boolean>();
+  listError$!: Observable<boolean>;
+  updateError$!: Observable<boolean>;
 
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     const apiResponse$: Observable<ApiResponse> = this.userService.getUsers();
     const apiUsers$: Observable<User[]> = apiResponse$.pipe(
-      tap((res: ApiResponse) => this.listError$.next(!!(res.error))),
       map((res: ApiResponse) => res.data)
     );
     const latestApiUsers$: Observable<User[]> = apiUsers$.pipe(
       shareReplay()
     );
-
-    const newUser$ = this.addUser$.pipe(
-      mergeMap((newUser: User) => this.userService.updateUser(newUser).pipe(
-        tap((res: ApiResponse) => this.updateError$.next(!!(res.error))),
-        map((res: ApiResponse) => res.data)
-      ))
+    const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
+      switchMapTo(apiUsers$),
     );
+
+    this.listError$ = apiResponse$.pipe(
+      map((res: ApiResponse) => !(res.data)),
+      startWith(false)
+    );
+
+    const newUserResponse$ = this.addUser$.pipe(
+      mergeMap((newUser: User) => this.userService.updateUser(newUser))
+    );
+
+    const newUser$ = newUserResponse$.pipe(
+      map((res: ApiResponse) => res.data)
+    );
+
+    this.updateError$ = newUserResponse$.pipe(
+      map((res: ApiResponse) => !(res.error)),
+      startWith(false)
+    )
 
     const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
       withLatestFrom(latestApiUsers$),
       map(([newUser, users]) => {
-        // console.log(newUser);
         console.log('latest: ', users);
         return [...users, newUser];
       }),
@@ -51,12 +63,9 @@ export class UserListComponent implements OnInit {
     );
 
     const newUsers$ = combineLatest([newUser$, optimisticUsers$]).pipe(
-      tap((data) => console.log('new stream: ', data))
+      tap(([newUser, optimisticUsers]) => console.log('new user: ', optimisticUsers)),
+      map(([newUser, optimisticUsers]) => optimisticUsers.map((user) =>))
     )
-
-    const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
-      switchMapTo(apiUsers$),
-    );
 
     this.loaded$ = apiResponse$.pipe(
       map(() => true),
