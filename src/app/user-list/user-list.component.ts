@@ -62,9 +62,9 @@ export class UserListComponent implements OnInit {
       tap((opt) => console.log('optimistic: ', opt))
     );
 
-    const newUsers$ = combineLatest([newUser$, optimisticUsers$]).pipe(
+    const newUsers$: Observable<User[]> = combineLatest([newUser$, optimisticUsers$]).pipe(
       tap(([newUser, optimisticUsers]) => console.log('new user: ', optimisticUsers)),
-      map(([newUser, optimisticUsers]) => optimisticUsers.map((user) =>))
+      map(([newUser, optimisticUsers]) => optimisticUsers.map((user) => !user.id && user.name === newUser.name ? newUser : user))
     )
 
     this.loaded$ = apiResponse$.pipe(

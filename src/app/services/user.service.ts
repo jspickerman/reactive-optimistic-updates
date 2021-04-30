@@ -75,7 +75,7 @@ export class UserService {
     // this.newUser$.next(user);
     // return this.response$.pipe(delay(650));
     // fakeUsers.push(user);
-    return of({data: {...user, id: v4()}, error: ''}).pipe(
+    return of({data: {...user, id: uuid()}, error: ''}).pipe(
       delay(500)
     )
   }
