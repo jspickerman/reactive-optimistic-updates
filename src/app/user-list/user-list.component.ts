@@ -36,8 +36,7 @@ export class UserListComponent implements OnInit {
     );
 
     this.listError$ = apiResponse$.pipe(
-      map((res: ApiResponse) => !(res.data)),
-      startWith(false)
+      map((res: ApiResponse) => !(res.data))
     );
 
     const newUserResponse$ = this.addUser$.pipe(
@@ -68,10 +67,9 @@ export class UserListComponent implements OnInit {
     )
 
     this.loaded$ = apiResponse$.pipe(
-      map(() => true),
-      startWith(false)
+      map(() => true)
     );
 
-    this.users$ = merge(latestApiUsers$, newUsers$, refreshedApiUsers$);
+    this.users$ = merge(latestApiUsers$, refreshedApiUsers$);
   }
 }

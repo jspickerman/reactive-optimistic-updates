@@ -10,6 +10,7 @@
                     <app-new-user-form (newUser)="addUser$.next($event)"></app-new-user-form>
                 </div>
                 <ng-container *ngIf="users$ | async as users">
+                  <span>{{users | json}}</span>
                     <div class="user-list-container">
                         <div *ngFor="let user of users" class="user-container">
                             <app-user [user]="user"></app-user>
