@@ -58,7 +58,7 @@ export class UserService {
   }
 
   getUsers(): Observable<ApiResponse> {
-    // console.log('get users!');
+    console.log('get users!');
     // return this.response$.pipe(delay(500));
     return of({data: fakeUsers, error: ''}).pipe(
       delay(500)
@@ -66,12 +66,12 @@ export class UserService {
   }
 
   updateUser(user: User): Observable<ApiResponse> {
-    // console.log('update user!');
+    console.log('update user!');
     // this.newUser$.next(user);
     // return this.response$.pipe(delay(650));
-    fakeUsers.push(user);
+    // fakeUsers.push(user);
     return of({data: user, error: ''}).pipe(
-      delay(5000)
+      delay(500)
     )
   }
 }

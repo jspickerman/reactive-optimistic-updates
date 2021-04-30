@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { flatMap, map, mergeMap, shareReplay, startWith, switchMapTo, tap, withLatestFrom } from 'rxjs/operators';
 import { ApiResponse, User, UserService } from '../services/user.service';
 
@@ -18,34 +18,41 @@ export class UserListComponent implements OnInit {
 
   /* Page State */
   loaded$!: Observable<boolean>;
-  error$!: Observable<boolean>;
+  listError$ = new Subject<boolean>();
+  updateError$ = new Subject<boolean>();
 
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     const apiResponse$: Observable<ApiResponse> = this.userService.getUsers();
     const apiUsers$: Observable<User[]> = apiResponse$.pipe(
-      map((res: ApiResponse) => res?.data)
+      tap((res: ApiResponse) => this.listError$.next(!!(res.error))),
+      map((res: ApiResponse) => res.data)
     );
     const latestApiUsers$: Observable<User[]> = apiUsers$.pipe(
       shareReplay()
     );
 
     const newUser$ = this.addUser$.pipe(
-      mergeMap((newUser: User) => this.userService.updateUser(newUser).pipe(map((res) => res.data)))
+      mergeMap((newUser: User) => this.userService.updateUser(newUser).pipe(
+        tap((res: ApiResponse) => this.updateError$.next(!!(res.error))),
+        map((res: ApiResponse) => res.data)
+      ))
     );
 
-    const mergedUsers$ = merge(newUser$, this.addUser$);
-
-    const optimisticUsers$: Observable<User[]> = mergedUsers$.pipe(
+    const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
       withLatestFrom(latestApiUsers$),
       map(([newUser, users]) => {
         // console.log(newUser);
-        // console.log(users);
+        console.log('latest: ', users);
         return [...users, newUser];
       }),
-      // tap(() => this.refreshUsers$.next())
+      tap((opt) => console.log('optimistic: ', opt))
     );
+
+    const newUsers$ = combineLatest([newUser$, optimisticUsers$]).pipe(
+      tap((data) => console.log('new stream: ', data))
+    )
 
     const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
       switchMapTo(apiUsers$),
@@ -56,10 +63,6 @@ export class UserListComponent implements OnInit {
       startWith(false)
     );
 
-    this.error$ = apiResponse$.pipe(
-      map((res: ApiResponse) => !!(res.error)),
-    );
-
-    this.users$ = merge(latestApiUsers$, optimisticUsers$, refreshedApiUsers$);
+    this.users$ = merge(latestApiUsers$, newUsers$, refreshedApiUsers$);
   }
 }

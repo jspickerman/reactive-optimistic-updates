@@ -4,7 +4,7 @@
             <span>Loading...</span>
         </ng-container>
 
-        <ng-container *appNgLet="error$ | async as error">
+        <ng-container *appNgLet="listError$ | async as error">
             <ng-container *ngIf="loaded && !error">
                 <div class="new-user-container">
                     <app-new-user-form (newUser)="addUser$.next($event)"></app-new-user-form>
