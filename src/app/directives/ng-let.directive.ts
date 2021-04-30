@@ -5,7 +5,7 @@ interface LetContext<T> {
 }
 
 @Directive({
-  selector: '[appNgLet]'
+  selector: 'appNgLet'
 })
 export class NgLetDirective<T> {
 
