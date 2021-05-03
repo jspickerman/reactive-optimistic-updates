@@ -36,7 +36,7 @@ export class UserListComponent implements OnInit {
     );
 
     this.listError$ = apiResponse$.pipe(
-      map((res: UserCollectionResponse) => !(res.error))
+      map((res: UserCollectionResponse) => !!(res.error))
     );
 
     // const newUserResponse$ = this.addUser$.pipe(
