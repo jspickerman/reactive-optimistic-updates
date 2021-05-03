@@ -69,8 +69,6 @@ export class UserListComponent implements OnInit {
       map(() => true)
     );
 
-    this.users$ = merge(latestApiUsers$).pipe(
-      tap((val) => console.log(val))
-    );
+    this.users$ = merge(latestApiUsers$, refreshedApiUsers$);
   }
 }
