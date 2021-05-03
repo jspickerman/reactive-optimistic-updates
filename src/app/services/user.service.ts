@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs/dist/types';
 import { delay, map, scan, startWith, tap } from 'rxjs/operators';
 
 export interface User {
