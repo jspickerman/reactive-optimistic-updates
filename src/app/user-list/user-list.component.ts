@@ -36,11 +36,13 @@ export class UserListComponent implements OnInit {
     );
 
     this.listLoaded$ = apiResponse$.pipe(
-      map(() => true)
+      map(() => true),
+      startWith(false)
     );
 
     this.listError$ = apiResponse$.pipe(
-      map((res: UserCollectionResponse) => !!(res.error))
+      map((res: UserCollectionResponse) => !!(res.error)),
+      startWith(false)
     );
 
     const newUserResponse$: Observable<UserResourceResponse> = this.addUser$.pipe(
