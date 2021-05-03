@@ -44,7 +44,7 @@ export class UserListComponent implements OnInit {
       map((res: UserCollectionResponse) => res?.data)
     );
 
-    /* Merged API Observables and derived values */
+    /* Flattened API Observables */
     const apiResponse$: Observable<UserCollectionResponse> = merge(initialApiResponse$, refreshedApiResponse$);
     const apiUsers$: Observable<User[]> = merge(initialApiUsers$, refreshedApiUsers$);
 
