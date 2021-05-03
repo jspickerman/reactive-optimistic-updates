@@ -1,23 +1,40 @@
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }
 
-.new-user-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-width: 350px;
+.error-box {
+  width: 100%;
+  padding: .5em .5em;
+  border-radius: 5px;
+  background: rgb(255, 71, 71);
+  text-align: center;
 }
 
-.user-list-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-height: 380px;
+.error-box span {
+  color: #fff;
 }
 
 .user-container {
+  display: flex;
+}
+
+.new-user-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 350px;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 380px;
+}
+
+.user-list-item {
     margin: 1em;
 }

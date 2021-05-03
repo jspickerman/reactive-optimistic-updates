@@ -19,7 +19,7 @@ export class UserListComponent implements OnInit {
   /* Page State */
   loaded$!: Observable<boolean>;
   listError$!: Observable<boolean>;
-  updateError$!: Observable<boolean>;
+  newUserError$!: Observable<boolean>;
 
   constructor(private userService: UserService) { }
 
@@ -47,21 +47,20 @@ export class UserListComponent implements OnInit {
       map((res: ApiResponse) => res.data)
     );
 
-    this.updateError$ = newUserResponse$.pipe(
-      map((res: ApiResponse) => !(res.error)),
+    this.newUserError$ = newUserResponse$.pipe(
+      map((res: ApiResponse) => !!(res.error)),
       startWith(false)
     )
 
     const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
       withLatestFrom(latestApiUsers$),
       map(([newUser, users]) => {
-        console.log('latest: ', users);
         return [...users, newUser];
       })
     );
 
-    const newUsers$: Observable<User[]> = combineLatest([newUser$, optimisticUsers$]).pipe(
-      tap(([newUser, optimisticUsers]) => console.log('new user: ', optimisticUsers)),
+    const newUsers$: Observable<User[]> = newUser$.pipe(
+      withLatestFrom(optimisticUsers$),
       map(([newUser, optimisticUsers]) => optimisticUsers.map((user) => !user.id && user.name === newUser.name ? newUser : user))
     )
 
@@ -69,6 +68,6 @@ export class UserListComponent implements OnInit {
       map(() => true)
     );
 
-    this.users$ = merge(latestApiUsers$, refreshedApiUsers$, newUsers$);
+    this.users$ = merge(latestApiUsers$, refreshedApiUsers$, optimisticUsers$, newUsers$);
   }
 }
