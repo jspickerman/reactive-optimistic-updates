@@ -12,9 +12,9 @@
                 <ng-container *ngIf="users$ | async as users">
                   <span>{{users | json}}</span>
                     <div class="user-list-container">
-                        <div *ngFor="let user of users" class="user-container">
+                        <!-- <div *ngFor="let user of users" class="user-container">
                             <app-user [user]="user"></app-user>
-                        </div>
+                        </div> -->
                     </div>
                 </ng-container>
             </ng-container>
