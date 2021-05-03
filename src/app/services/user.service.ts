@@ -23,6 +23,7 @@ export interface UserResourceResponse extends ApiResponse {
   data: User;
 }
 
+/* Initial set of fake user data */
 let fakeUsers: User[] = [
   {
     id: '21431907-19ff-4527-b0ed-3b838ee80a1f',
@@ -44,6 +45,9 @@ let fakeUsers: User[] = [
   }
 ];
 
+/* Newly created users go here, this is to avoid some funky pass-by-reference issues */
+let newUsers: User[] = [];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -53,37 +57,20 @@ export class UserService {
   response$: Observable<ApiResponse>;
   newUser$ = new Subject<User>();
 
-  constructor() { 
-    this.users$ = this.newUser$.pipe(
-      scan((fakeUsers, newUser) =>  [...fakeUsers, newUser], fakeUsers),
-      startWith(fakeUsers),
-      tap((users) => console.log('user scan: ', users))
-    );
-    this.response$ = this.users$.pipe(
-      map((users) => {
-        console.log('here are the users: ', users)
-        return {
-          data: users, 
-          error: ''
-        }
-      })
-    )
-  }
+  constructor() { }
 
   getUsers(): Observable<ApiResponse> {
     console.log('get users!');
-    // return this.response$.pipe(delay(500));
-    return of({data: fakeUsers, error: ''}).pipe(
+    return of({data: [...fakeUsers, ...newUsers], error: ''}).pipe(
       delay(500)
     )
   }
 
   updateUser(user: User): Observable<ApiResponse> {
     console.log('update user!');
-    // this.newUser$.next(user);
-    // return this.response$.pipe(delay(650));
-    // fakeUsers.push(user);
-    return of({data: {...user, id: uuid()}, error: ''}).pipe(
+    const createdUser = {...user, id: uuid()}
+    newUsers = [...newUsers, createdUser];
+    return of({data: createdUser, error: ''}).pipe(
       delay(5000)
     )
   }

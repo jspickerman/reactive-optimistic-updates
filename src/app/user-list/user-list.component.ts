@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { merge, Observable, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, startWith, switchMapTo, withLatestFrom } from 'rxjs/operators';
+import { map, mergeMap, shareReplay, startWith, switchMapTo, withLatestFrom, tap, switchMap } from 'rxjs/operators';
 import { ApiResponse, User, UserCollectionResponse, UserResourceResponse, UserService } from '../services/user.service';
 
 @Component({
@@ -13,7 +13,6 @@ export class UserListComponent implements OnInit {
   /* Data Streams and Subjects */
   users$: Observable<User[]>;
   addUser$ = new Subject<User>();
-  postUser$ = new Subject();
   refreshUsers$ = new Subject();
 
   /* API State Tracking */
@@ -23,17 +22,31 @@ export class UserListComponent implements OnInit {
 
   constructor(private userService: UserService) { }
 
+  private newUserIsTemp(newUser: User, tempUser: User): boolean {
+    return (!tempUser.id && newUser.name === tempUser.name && newUser.dateOfBirth === tempUser.dateOfBirth);
+  }
+
   ngOnInit(): void {
-    const apiResponse$: Observable<UserCollectionResponse> = this.userService.getUsers();
-    const apiUsers$: Observable<User[]> = apiResponse$.pipe(
-      map((res: UserCollectionResponse) => res.data)
-    );
-    const latestApiUsers$: Observable<User[]> = apiUsers$.pipe(
+    /* Initial API request response and user data */
+    const initialApiResponse$: Observable<UserCollectionResponse> = this.userService.getUsers().pipe(
       shareReplay()
     );
-    const refreshedApiUsers$: Observable<User[]> = this.refreshUsers$.pipe(
-      switchMapTo(apiUsers$),
+    const initialApiUsers$: Observable<User[]> = initialApiResponse$.pipe(
+      map((res: UserCollectionResponse) => res.data),
     );
+
+    /* Re-fetched API request response and user data */
+    const refreshedApiResponse$: Observable<UserCollectionResponse> = this.addUser$.pipe(
+      mergeMap(() => this.userService.getUsers()),
+      shareReplay()
+    );
+    const refreshedApiUsers$ = refreshedApiResponse$.pipe(
+      map((res: UserCollectionResponse) => res.data)
+    );
+
+    /* Merged API Observables and derived values */
+    const apiResponse$: Observable<UserCollectionResponse> = merge(initialApiResponse$, refreshedApiResponse$);
+    const apiUsers$: Observable<User[]> = merge(initialApiUsers$, refreshedApiUsers$);
 
     this.listLoaded$ = apiResponse$.pipe(
       map(() => true),
@@ -45,12 +58,15 @@ export class UserListComponent implements OnInit {
       startWith(false)
     );
 
+    /* Newly created user and derived values */
     const newUserResponse$: Observable<UserResourceResponse> = this.addUser$.pipe(
-      mergeMap((newUser: User) => this.userService.updateUser(newUser))
+      mergeMap((newUser: User) => this.userService.updateUser(newUser)),
+      shareReplay()
     );
 
     const newUser$: Observable<User> = newUserResponse$.pipe(
-      map((res: ApiResponse) => res.data)
+      map((res: ApiResponse) => res.data),
+      tap(() => this.refreshUsers$.next())
     );
 
     this.newUserError$ = newUserResponse$.pipe(
@@ -58,18 +74,21 @@ export class UserListComponent implements OnInit {
       startWith(false)
     )
 
+    /* Optimistic list of users with mock user from form */
     const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
-      withLatestFrom(latestApiUsers$),
+      withLatestFrom(apiUsers$),
       map(([newUser, users]) => {
         return [...users, newUser];
       })
     );
 
+    /* Updated list of users with optimistic user replaced by user from API */
     const newUsers$: Observable<User[]> = newUser$.pipe(
       withLatestFrom(optimisticUsers$),
-      map(([newUser, optimisticUsers]) => optimisticUsers.map((user) => !user.id && user.name === newUser.name ? newUser : user))
+      map(([newUser, optimisticUsers]) => optimisticUsers.map((user) => this.newUserIsTemp(newUser, user) ? newUser : user))
     )
 
-    this.users$ = merge(latestApiUsers$, refreshedApiUsers$, optimisticUsers$, newUsers$);
+    /* Flattened Observable for rendering users in UI */
+    this.users$ = merge(apiUsers$, optimisticUsers$, newUsers$);
   }
 }
