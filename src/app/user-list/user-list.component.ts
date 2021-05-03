@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
-import { flatMap, map, mergeMap, shareReplay, startWith, switchMapTo, tap, withLatestFrom } from 'rxjs/operators';
-import { ApiResponse, User, UserCollectionResponse, UserService } from '../services/user.service';
+import { merge, Observable, Subject } from 'rxjs';
+import { map, mergeMap, shareReplay, startWith, switchMapTo, withLatestFrom } from 'rxjs/operators';
+import { ApiResponse, User, UserCollectionResponse, UserResourceResponse, UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-user-list',
@@ -16,8 +16,8 @@ export class UserListComponent implements OnInit {
   postUser$ = new Subject();
   refreshUsers$ = new Subject();
 
-  /* Page State */
-  loaded$!: Observable<boolean>;
+  /* API State Tracking */
+  listLoaded$!: Observable<boolean>;
   listError$!: Observable<boolean>;
   newUserError$!: Observable<boolean>;
 
@@ -35,15 +35,19 @@ export class UserListComponent implements OnInit {
       switchMapTo(apiUsers$),
     );
 
+    this.listLoaded$ = apiResponse$.pipe(
+      map(() => true)
+    );
+
     this.listError$ = apiResponse$.pipe(
       map((res: UserCollectionResponse) => !!(res.error))
     );
 
-    const newUserResponse$ = this.addUser$.pipe(
+    const newUserResponse$: Observable<UserResourceResponse> = this.addUser$.pipe(
       mergeMap((newUser: User) => this.userService.updateUser(newUser))
     );
 
-    const newUser$ = newUserResponse$.pipe(
+    const newUser$: Observable<User> = newUserResponse$.pipe(
       map((res: ApiResponse) => res.data)
     );
 
@@ -63,10 +67,6 @@ export class UserListComponent implements OnInit {
       withLatestFrom(optimisticUsers$),
       map(([newUser, optimisticUsers]) => optimisticUsers.map((user) => !user.id && user.name === newUser.name ? newUser : user))
     )
-
-    this.loaded$ = apiResponse$.pipe(
-      map(() => true)
-    );
 
     this.users$ = merge(latestApiUsers$, refreshedApiUsers$, optimisticUsers$, newUsers$);
   }
