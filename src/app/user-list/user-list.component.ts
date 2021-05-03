@@ -32,7 +32,7 @@ export class UserListComponent implements OnInit {
       shareReplay()
     );
     const initialApiUsers$: Observable<User[]> = initialApiResponse$.pipe(
-      map((res: UserCollectionResponse) => res.data),
+      map((res: UserCollectionResponse) => res?.data),
     );
 
     /* Re-fetched API request response and user data */
@@ -41,7 +41,7 @@ export class UserListComponent implements OnInit {
       shareReplay()
     );
     const refreshedApiUsers$ = refreshedApiResponse$.pipe(
-      map((res: UserCollectionResponse) => res.data)
+      map((res: UserCollectionResponse) => res?.data)
     );
 
     /* Merged API Observables and derived values */
