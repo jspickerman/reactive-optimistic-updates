@@ -24,6 +24,7 @@ export class UserListComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
+    try {
     const apiResponse$: Observable<ApiResponse> = this.userService.getUsers();
     const apiUsers$: Observable<User[]> = apiResponse$.pipe(
       map((res: ApiResponse) => res.data)
@@ -70,5 +71,8 @@ export class UserListComponent implements OnInit {
     );
 
     this.users$ = merge(latestApiUsers$, refreshedApiUsers$);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
