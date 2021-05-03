@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs/dist/types';
 import { delay, map, scan, startWith, tap } from 'rxjs/operators';
 
 export interface User {
@@ -12,6 +12,14 @@ export interface User {
 export interface ApiResponse {
   data: any;
   error: string;
+}
+
+export interface UserCollectionResponse extends ApiResponse {
+  data: User[];
+}
+
+export interface UserResourceResponse extends ApiResponse {
+  data: User;
 }
 
 let fakeUsers: User[] = [

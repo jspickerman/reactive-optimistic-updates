@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { flatMap, map, mergeMap, shareReplay, startWith, switchMapTo, tap, withLatestFrom } from 'rxjs/operators';
-import { ApiResponse, User, UserService } from '../services/user.service';
+import { ApiResponse, User, UserCollectionResponse, UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-user-list',
@@ -24,9 +24,9 @@ export class UserListComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    const apiResponse$: Observable<ApiResponse> = this.userService.getUsers();
+    const apiResponse$: Observable<UserCollectionResponse> = this.userService.getUsers();
     const apiUsers$: Observable<User[]> = apiResponse$.pipe(
-      map((res: ApiResponse) => res.data)
+      map((res: UserCollectionResponse) => res.data)
     );
     const latestApiUsers$: Observable<User[]> = apiUsers$.pipe(
       shareReplay()
@@ -36,7 +36,7 @@ export class UserListComponent implements OnInit {
     );
 
     this.listError$ = apiResponse$.pipe(
-      map((res: ApiResponse) => !(res.data))
+      map((res: UserCollectionResponse) => !(res.error))
     );
 
     // const newUserResponse$ = this.addUser$.pipe(
@@ -69,6 +69,6 @@ export class UserListComponent implements OnInit {
       map(() => true)
     );
 
-    this.users$ = merge(latestApiUsers$, refreshedApiUsers$);
+    this.users$ = latestApiUsers$;
   }
 }
