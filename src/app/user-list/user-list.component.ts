@@ -44,7 +44,7 @@ export class UserListComponent implements OnInit {
       map((res: UserCollectionResponse) => res?.data)
     );
 
-    /* Flattened API Observables */
+    /* Flattened API Observables and derived values */
     const apiResponse$: Observable<UserCollectionResponse> = merge(initialApiResponse$, refreshedApiResponse$);
     const apiUsers$: Observable<User[]> = merge(initialApiUsers$, refreshedApiUsers$);
 
@@ -82,7 +82,7 @@ export class UserListComponent implements OnInit {
       })
     );
 
-    /* Updated list of users with optimistic user replaced by user from API */
+    /* Updated list with optimistic user replaced by user from API */
     const newUsers$: Observable<User[]> = newUser$.pipe(
       withLatestFrom(optimisticUsers$),
       map(([newUser, optimisticUsers]) => optimisticUsers.map((user) => this.newUserIsTemp(newUser, user) ? newUser : user))
