@@ -44,7 +44,7 @@ export class UserListComponent implements OnInit {
       map((res: UserCollectionResponse) => res?.data)
     );
 
-    /* Flattened API Observables and derived values */
+    /* Flattened API and Users Observables */
     const apiResponse$: Observable<UserCollectionResponse> = merge(initialApiResponse$, refreshedApiResponse$);
     const apiUsers$: Observable<User[]> = merge(initialApiUsers$, refreshedApiUsers$);
 
@@ -58,7 +58,7 @@ export class UserListComponent implements OnInit {
       startWith(false)
     );
 
-    /* Newly created user and derived values */
+    /* New user POST response and user data */
     const newUserResponse$: Observable<UserResourceResponse> = this.addUser$.pipe(
       mergeMap((newUser: User) => this.userService.updateUser(newUser)),
       shareReplay()
