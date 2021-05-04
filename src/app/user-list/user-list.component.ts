@@ -77,9 +77,7 @@ export class UserListComponent implements OnInit {
     /* Optimistic list of users with mock user from form */
     const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
       withLatestFrom(apiUsers$),
-      map(([newUser, users]) => {
-        return [...users, newUser];
-      })
+      map(([newUser, users]) => [...users, newUser])
     );
 
     /* Updated list with optimistic user replaced by user from API */
