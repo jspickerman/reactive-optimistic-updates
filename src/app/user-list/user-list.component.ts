@@ -84,7 +84,7 @@ export class UserListComponent implements OnInit {
     const newUsers$: Observable<User[]> = newUser$.pipe(
       withLatestFrom(optimisticUsers$),
       map(([newUser, optimisticUsers]) => optimisticUsers.map((user) => this.newUserIsTemp(newUser, user) ? newUser : user))
-    )
+    );
 
     /* Flattened Observable for rendering users in UI */
     this.users$ = merge(apiUsers$, optimisticUsers$, newUsers$);
