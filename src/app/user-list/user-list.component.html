@@ -16,7 +16,7 @@
           <ng-container *appNgLet="listError$ | async as listError">
               <ng-container *ngIf="listLoaded && !listError">
                   <div class="new-user-container">
-                      <app-new-user-form (newUser)="addUser$.next($event)"></app-new-user-form>
+                      <app-new-user-form class="new-user" (newUser)="addUser$.next($event)"></app-new-user-form>
                   </div>
                   <ng-container *ngIf="users$ | async as users">
                       <div class="user-list">
