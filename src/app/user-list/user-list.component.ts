@@ -36,7 +36,7 @@ export class UserListComponent implements OnInit {
     );
 
     /* Re-fetched API request response and user data */
-    const refreshedApiResponse$: Observable<UserCollectionResponse> = this.addUser$.pipe(
+    const refreshedApiResponse$: Observable<UserCollectionResponse> = this.refreshUsers$.pipe(
       mergeMap(() => this.userService.getUsers()),
       shareReplay()
     );
@@ -72,7 +72,7 @@ export class UserListComponent implements OnInit {
     this.newUserError$ = newUserResponse$.pipe(
       map((res: ApiResponse) => !!(res.error)),
       startWith(false)
-    )
+    );
 
     /* Optimistic list of users with mock user from form */
     const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
