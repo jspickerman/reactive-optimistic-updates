@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { merge, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { map, mergeMap, shareReplay, startWith, switchMapTo, withLatestFrom, tap, switchMap } from 'rxjs/operators';
 import { ApiResponse, User, UserCollectionResponse, UserResourceResponse, UserService } from '../services/user.service';
 
@@ -13,7 +13,8 @@ export class UserListComponent implements OnInit {
   /* Data Streams and Subjects */
   users$: Observable<User[]>;
   addUser$ = new Subject<User>();
-  refreshUsers$ = new Subject();
+  // refreshUsers$ = new Subject();
+  fetchUsers$ = new BehaviorSubject<boolean>(true);
 
   /* API State Tracking */
   listLoaded$!: Observable<boolean>;
@@ -28,25 +29,34 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     /* Initial API request response and user data */
-    const initialApiResponse$: Observable<UserCollectionResponse> = this.userService.getUsers().pipe(
-      shareReplay()
-    );
-    const initialApiUsers$: Observable<User[]> = initialApiResponse$.pipe(
-      map((res: UserCollectionResponse) => res?.data),
-    );
+    // const initialApiResponse$: Observable<UserCollectionResponse> = this.userService.getUsers().pipe(
+    //   shareReplay()
+    // );
+    // const initialApiUsers$: Observable<User[]> = initialApiResponse$.pipe(
+    //   map((res: UserCollectionResponse) => res?.data),
+    // );
 
-    /* Re-fetched API request response and user data */
-    const refreshedApiResponse$: Observable<UserCollectionResponse> = this.refreshUsers$.pipe(
+    // /* Re-fetched API request response and user data */
+    // const refreshedApiResponse$: Observable<UserCollectionResponse> = this.refreshUsers$.pipe(
+    //   mergeMap(() => this.userService.getUsers()),
+    //   shareReplay()
+    // );
+    // const refreshedApiUsers$ = refreshedApiResponse$.pipe(
+    //   map((res: UserCollectionResponse) => res?.data)
+    // );
+
+    // /* Flattened API and Users Observables */
+    // const apiResponse$: Observable<UserCollectionResponse> = merge(initialApiResponse$, refreshedApiResponse$);
+    // const apiUsers$: Observable<User[]> = merge(initialApiUsers$, refreshedApiUsers$);
+
+    const apiResponse$ = this.fetchUsers$.pipe(
       mergeMap(() => this.userService.getUsers()),
       shareReplay()
     );
-    const refreshedApiUsers$ = refreshedApiResponse$.pipe(
-      map((res: UserCollectionResponse) => res?.data)
-    );
 
-    /* Flattened API and Users Observables */
-    const apiResponse$: Observable<UserCollectionResponse> = merge(initialApiResponse$, refreshedApiResponse$);
-    const apiUsers$: Observable<User[]> = merge(initialApiUsers$, refreshedApiUsers$);
+    const apiUsers$ = apiResponse$.pipe(
+      map((res: ApiResponse) => res?.data)
+    );
 
     this.listLoaded$ = apiResponse$.pipe(
       map(() => true),
@@ -66,7 +76,8 @@ export class UserListComponent implements OnInit {
 
     const newUser$: Observable<User> = newUserResponse$.pipe(
       map((res: ApiResponse) => res.data),
-      tap(() => this.refreshUsers$.next())
+      // tap(() => this.refreshUsers$.next()),
+      tap(() => this.fetchUsers$.next(true))
     );
 
     this.newUserError$ = newUserResponse$.pipe(
