@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
-import { delay, map, scan, startWith, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { delay} from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 
 export interface User {
@@ -37,7 +37,7 @@ let fakeUsers: User[] = [
   }
 ];
 
-/* Newly created users go here, this is to avoid some funky pass-by-reference issues */
+/* Newly created users go here. Local variable is to avoid some funky pass-by-reference issues */
 let newUsers: User[] = [];
 
 @Injectable({
