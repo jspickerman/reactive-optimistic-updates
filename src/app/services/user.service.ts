@@ -10,17 +10,9 @@ export interface User {
   field: string;
 };
 
-export interface ApiResponse {
-  data: any;
+export interface ApiResponse<Type = any> {
+  data: Type;
   error: string;
-}
-
-export interface UserCollectionResponse extends ApiResponse {
-  data: User[];
-}
-
-export interface UserResourceResponse extends ApiResponse {
-  data: User;
 }
 
 /* Initial set of fake user data */
@@ -59,14 +51,14 @@ export class UserService {
 
   constructor() { }
 
-  getUsers(): Observable<ApiResponse> {
+  getUsers(): Observable<ApiResponse<User[]>> {
     console.log('get users!');
     return of({data: [...fakeUsers, ...newUsers], error: ''}).pipe(
       delay(500)
     )
   }
 
-  updateUser(user: User): Observable<ApiResponse> {
+  updateUser(user: User): Observable<ApiResponse<User>> {
     console.log('update user!');
     const createdUser = {...user, id: uuid()}
     newUsers = [...newUsers, createdUser];

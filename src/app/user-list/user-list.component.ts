@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, startWith, switchMapTo, withLatestFrom, tap, switchMap } from 'rxjs/operators';
-import { ApiResponse, User, UserCollectionResponse, UserResourceResponse, UserService } from '../services/user.service';
+import { map, mergeMap, shareReplay, startWith, withLatestFrom, tap } from 'rxjs/operators';
+import { ApiResponse, User, UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-user-list',
@@ -27,7 +27,7 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    /* Initial API request response and user data */
+    /* API request response and user data */
     const apiResponse$: Observable<ApiResponse> = this.fetchUsers$.pipe(
       mergeMap(() => this.userService.getUsers()),
       shareReplay()
@@ -37,25 +37,25 @@ export class UserListComponent implements OnInit {
       map((res: ApiResponse) => res?.data)
     );
 
+    /* Error Observables derived from API data */
     this.listLoaded$ = apiResponse$.pipe(
       map(() => true),
       startWith(false)
     );
 
     this.listError$ = apiResponse$.pipe(
-      map((res: UserCollectionResponse) => !!(res.error)),
+      map((res: ApiResponse) => !!(res.error)),
       startWith(false)
     );
 
-    /* New user POST response and user data */
-    const newUserResponse$: Observable<UserResourceResponse> = this.addUser$.pipe(
+    /* New user POST response, user data and error boolean */
+    const newUserResponse$: Observable<ApiResponse> = this.addUser$.pipe(
       mergeMap((newUser: User) => this.userService.updateUser(newUser)),
       shareReplay()
     );
 
     const newUser$: Observable<User> = newUserResponse$.pipe(
       map((res: ApiResponse) => res.data),
-      // tap(() => this.refreshUsers$.next()),
       tap(() => this.fetchUsers$.next(true))
     );
 
