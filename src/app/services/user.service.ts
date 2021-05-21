@@ -53,10 +53,10 @@ export class UserService {
     )
   }
 
-  updateUser(user: User): Observable<ApiResponse<User>> {
-    const createdUser = {...user, id: uuid()}
-    newUsers = [...newUsers, createdUser];
-    return of({data: createdUser, error: ''}).pipe(
+  addUser(user: User): Observable<ApiResponse<User>> {
+    const newUser = {...user, id: uuid()}
+    newUsers = [...newUsers, newUser];
+    return of({data: newUser, error: ''}).pipe(
       delay(450)
     )
   }

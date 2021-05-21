@@ -50,7 +50,7 @@ export class UserListComponent implements OnInit {
 
     /* New user POST response, user data and error boolean */
     const newUserResponse$: Observable<ApiResponse<User>> = this.addUser$.pipe(
-      mergeMap((newUser: User) => this.userService.updateUser(newUser)),
+      mergeMap((newUser: User) => this.userService.addUser(newUser)),
       shareReplay()
     );
 
