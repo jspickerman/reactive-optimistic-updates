@@ -45,10 +45,6 @@ let newUsers: User[] = [];
 })
 export class UserService {
 
-  users$: Observable<User[]>;
-  response$: Observable<ApiResponse>;
-  newUser$ = new Subject<User>();
-
   constructor() { }
 
   getUsers(): Observable<ApiResponse<User[]>> {
