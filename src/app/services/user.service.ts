@@ -48,14 +48,12 @@ export class UserService {
   constructor() { }
 
   getUsers(): Observable<ApiResponse<User[]>> {
-    console.log('get users!');
     return of({data: [...fakeUsers, ...newUsers], error: ''}).pipe(
       delay(500)
     )
   }
 
   updateUser(user: User): Observable<ApiResponse<User>> {
-    console.log('update user!');
     const createdUser = {...user, id: uuid()}
     newUsers = [...newUsers, createdUser];
     return of({data: createdUser, error: ''}).pipe(
