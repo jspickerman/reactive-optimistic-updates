@@ -63,7 +63,7 @@ export class UserService {
     const createdUser = {...user, id: uuid()}
     newUsers = [...newUsers, createdUser];
     return of({data: createdUser, error: ''}).pipe(
-      delay(5000)
+      delay(450)
     )
   }
 }
