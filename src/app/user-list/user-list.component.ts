@@ -29,32 +29,12 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     /* Initial API request response and user data */
-    // const initialApiResponse$: Observable<UserCollectionResponse> = this.userService.getUsers().pipe(
-    //   shareReplay()
-    // );
-    // const initialApiUsers$: Observable<User[]> = initialApiResponse$.pipe(
-    //   map((res: UserCollectionResponse) => res?.data),
-    // );
-
-    // /* Re-fetched API request response and user data */
-    // const refreshedApiResponse$: Observable<UserCollectionResponse> = this.refreshUsers$.pipe(
-    //   mergeMap(() => this.userService.getUsers()),
-    //   shareReplay()
-    // );
-    // const refreshedApiUsers$ = refreshedApiResponse$.pipe(
-    //   map((res: UserCollectionResponse) => res?.data)
-    // );
-
-    // /* Flattened API and Users Observables */
-    // const apiResponse$: Observable<UserCollectionResponse> = merge(initialApiResponse$, refreshedApiResponse$);
-    // const apiUsers$: Observable<User[]> = merge(initialApiUsers$, refreshedApiUsers$);
-
-    const apiResponse$ = this.fetchUsers$.pipe(
+    const apiResponse$: Observable<ApiResponse> = this.fetchUsers$.pipe(
       mergeMap(() => this.userService.getUsers()),
       shareReplay()
     );
 
-    const apiUsers$ = apiResponse$.pipe(
+    const apiUsers$: Observable<User[]> = apiResponse$.pipe(
       map((res: ApiResponse) => res?.data)
     );
 
