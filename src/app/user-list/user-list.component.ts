@@ -28,7 +28,7 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     /* API request response and user data */
-    const apiResponse$: Observable<ApiResponse> = this.fetchUsers$.pipe(
+    const apiResponse$: Observable<ApiResponse<User[]>> = this.fetchUsers$.pipe(
       mergeMap(() => this.userService.getUsers()),
       shareReplay()
     );
@@ -49,7 +49,7 @@ export class UserListComponent implements OnInit {
     );
 
     /* New user POST response, user data and error boolean */
-    const newUserResponse$: Observable<ApiResponse> = this.addUser$.pipe(
+    const newUserResponse$: Observable<ApiResponse<User>> = this.addUser$.pipe(
       mergeMap((newUser: User) => this.userService.updateUser(newUser)),
       shareReplay()
     );
