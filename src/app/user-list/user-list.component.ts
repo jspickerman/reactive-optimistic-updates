@@ -13,7 +13,6 @@ export class UserListComponent implements OnInit {
   /* Data Streams and Subjects */
   users$: Observable<User[]>;
   addUser$ = new Subject<User>();
-  // refreshUsers$ = new Subject();
   fetchUsers$ = new BehaviorSubject<boolean>(true);
 
   /* API State Tracking */
