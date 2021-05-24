@@ -55,7 +55,7 @@ export class UserListComponent implements OnInit {
     );
 
     const newUser$: Observable<User> = newUserResponse$.pipe(
-      map((res: ApiResponse) => res.data),
+      map((res: ApiResponse) => res?.data),
       tap(() => this.fetchUsers$.next(true))
     );
 
