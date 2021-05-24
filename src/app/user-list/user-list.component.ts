@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, startWith, withLatestFrom, tap } from 'rxjs/operators';
+import { map, mergeMap, shareReplay, startWith, withLatestFrom, tap, mapTo } from 'rxjs/operators';
 import { ApiResponse, User, UserService } from '../services/user.service';
 
 @Component({
@@ -39,7 +39,7 @@ export class UserListComponent implements OnInit {
 
     /* Error Observables derived from API data */
     this.listLoaded$ = apiResponse$.pipe(
-      map(() => true),
+      mapTo(true),
       startWith(false)
     );
 
