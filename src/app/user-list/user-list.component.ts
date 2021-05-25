@@ -37,7 +37,7 @@ export class UserListComponent implements OnInit {
       map((res: ApiResponse) => res?.data)
     );
 
-    /* Error Observables derived from API data */
+    /* Boolean Observables derived from API data */
     this.listLoaded$ = apiResponse$.pipe(
       mapTo(true),
       startWith(false)
