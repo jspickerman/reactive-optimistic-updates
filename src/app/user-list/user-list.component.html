@@ -1,7 +1,7 @@
 <div class="container">
-    <ng-container *appNgLet="listLoaded$ | async as listLoaded">
+    <ng-container *appNgLet="usersLoaded$ | async as usersLoaded">
         <div>
-          <ng-container *ngIf="!listLoaded">
+          <ng-container *ngIf="!usersLoaded">
               <span>Loading...</span>
           </ng-container>
 
@@ -13,8 +13,8 @@
         </div>
 
         <div class="user-container">
-          <ng-container *appNgLet="listError$ | async as listError">
-              <ng-container *ngIf="listLoaded && !listError">
+          <ng-container *appNgLet="usersError$ | async as usersError">
+              <ng-container *ngIf="usersLoaded && !usersError">
                   <div class="new-user-container">
                       <app-new-user-form class="new-user" (newUser)="addUser$.next($event)"></app-new-user-form>
                   </div>
@@ -27,7 +27,7 @@
                   </ng-container>
               </ng-container>
 
-              <ng-container *ngIf="listLoaded && listError">
+              <ng-container *ngIf="usersLoaded && usersError">
                   <span>An error occured! Please reload</span>
               </ng-container>
           </ng-container>

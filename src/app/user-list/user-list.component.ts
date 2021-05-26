@@ -16,8 +16,8 @@ export class UserListComponent implements OnInit {
   fetchUsers$ = new BehaviorSubject<boolean>(true);
 
   /* API State Tracking */
-  listLoaded$!: Observable<boolean>;
-  listError$!: Observable<boolean>;
+  usersLoaded$!: Observable<boolean>;
+  usersError$!: Observable<boolean>;
   newUserError$!: Observable<boolean>;
 
   constructor(private userService: UserService) { }
@@ -38,12 +38,12 @@ export class UserListComponent implements OnInit {
     );
 
     /* Boolean Observables derived from API data */
-    this.listLoaded$ = apiResponse$.pipe(
+    this.usersLoaded$ = apiResponse$.pipe(
       mapTo(true),
       startWith(false)
     );
 
-    this.listError$ = apiResponse$.pipe(
+    this.usersError$ = apiResponse$.pipe(
       map((res: ApiResponse<User[]>) => !!(res.error)),
       startWith(false)
     );
