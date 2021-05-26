@@ -48,6 +48,12 @@ export class UserListComponent implements OnInit {
       startWith(false)
     );
 
+    /* Optimistic list of users with mock user from form */
+    const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
+      withLatestFrom(apiUsers$),
+      map(([newUser, users]) => [...users, newUser])
+    );
+
     /* New user POST response, user data and error boolean */
     const newUserResponse$: Observable<ApiResponse<User>> = this.addUser$.pipe(
       mergeMap((newUser: User) => this.userService.addUser(newUser)),
@@ -62,12 +68,6 @@ export class UserListComponent implements OnInit {
     this.newUserError$ = newUserResponse$.pipe(
       map((res: ApiResponse) => !!(res.error)),
       startWith(false)
-    );
-
-    /* Optimistic list of users with mock user from form */
-    const optimisticUsers$: Observable<User[]> = this.addUser$.pipe(
-      withLatestFrom(apiUsers$),
-      map(([newUser, users]) => [...users, newUser])
     );
 
     /* Updated list with optimistic user replaced by user from API */
