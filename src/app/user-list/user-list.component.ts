@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, startWith, withLatestFrom, tap, mapTo } from 'rxjs/operators';
+import { BehaviorSubject, iif, merge, Observable, Subject } from 'rxjs';
+import { map, mergeMap, shareReplay, startWith, withLatestFrom, tap, mapTo, filter } from 'rxjs/operators';
 import { ApiResponse, User, UserService } from '../services/user.service';
 
 @Component({
@@ -34,7 +34,7 @@ export class UserListComponent implements OnInit {
     );
 
     const apiUsers$: Observable<User[]> = apiResponse$.pipe(
-      map((res: ApiResponse) => res?.data)
+      map((res: ApiResponse<User[]>) => res?.data)
     );
 
     /* Boolean Observables derived from API data */
@@ -44,7 +44,7 @@ export class UserListComponent implements OnInit {
     );
 
     this.listError$ = apiResponse$.pipe(
-      map((res: ApiResponse) => !!(res.error)),
+      map((res: ApiResponse<User[]>) => !!(res.error)),
       startWith(false)
     );
 
@@ -57,16 +57,16 @@ export class UserListComponent implements OnInit {
     /* New user POST response, user data and error boolean */
     const newUserResponse$: Observable<ApiResponse<User>> = this.addUser$.pipe(
       mergeMap((newUser: User) => this.userService.addUser(newUser)),
+      tap(() => this.fetchUsers$.next(true)),
       shareReplay()
     );
 
     const newUser$: Observable<User> = newUserResponse$.pipe(
-      map((res: ApiResponse) => res?.data),
-      tap(() => this.fetchUsers$.next(true))
+      map((res: ApiResponse<User>) => res?.data)
     );
 
     this.newUserError$ = newUserResponse$.pipe(
-      map((res: ApiResponse) => !!(res.error)),
+      map((res: ApiResponse<User>) => !!(res.error)),
       startWith(false)
     );
 
