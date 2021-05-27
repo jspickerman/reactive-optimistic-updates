@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { delay} from 'rxjs/operators';
+import { delay, tap} from 'rxjs/operators';
 import { v4 as uuid } from 'uuid';
 
 export interface User {
@@ -49,7 +49,7 @@ export class UserService {
 
   getUsers(): Observable<ApiResponse<User[]>> {
     return of({data: [...fakeUsers, ...newUsers], error: ''}).pipe(
-      delay(500)
+      delay(2500)
     )
   }
 
