@@ -39,6 +39,7 @@ export class UserListComponent implements OnInit {
 
     /* Boolean Observables derived from API data */
     this.usersLoaded$ = apiResponse$.pipe(
+      tap(() => console.log('users loading!')),
       mapTo(true),
       startWith(false)
     );
