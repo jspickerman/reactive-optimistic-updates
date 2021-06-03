@@ -49,7 +49,7 @@ export class UserService {
 
   getUsers(): Observable<ApiResponse<User[]>> {
     return of({data: [...fakeUsers, ...newUsers], error: ''}).pipe(
-      delay(2500)
+      delay(500)
     )
   }
 
