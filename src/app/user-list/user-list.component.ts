@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, iif, merge, Observable, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, startWith, withLatestFrom, tap, mapTo, filter } from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { map, shareReplay, startWith, withLatestFrom, tap, mapTo } from 'rxjs/operators';
 import { ApiResponse, User, UserService } from '../services/user.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     /* API request response and user data */
     const apiResponse$: Observable<ApiResponse<User[]>> = this.fetchUsers$.pipe(
-      mergeMap(() => this.userService.getUsers()),
+      switchMap(() => this.userService.getUsers()),
       shareReplay()
     );
 
@@ -57,7 +57,7 @@ export class UserListComponent implements OnInit {
 
     /* New user POST response, user data and error boolean */
     const newUserResponse$: Observable<ApiResponse<User>> = this.addUser$.pipe(
-      mergeMap((newUser: User) => this.userService.addUser(newUser)),
+      switchMap((newUser: User) => this.userService.addUser(newUser)),
       tap(() => this.fetchUsers$.next(true)),
       shareReplay()
     );
